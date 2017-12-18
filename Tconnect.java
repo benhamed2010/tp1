@@ -1,13 +1,20 @@
 package ConnectionJavaMysql;
 
+
+
+
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -25,7 +32,10 @@ public class Tconnect {
 		String fileName ="monfichier.csv";
 		File file = new File(fileName);
 		
+		
 			Scanner in = new Scanner (file);
+			
+
 			while (in.hasNextLine()){
 				String line = in.nextLine(); 
 				
@@ -73,36 +83,54 @@ public class Tconnect {
 	            int lineID = 0;
 	            int fieldID = 0;
 	           
+	         //   ArrayList<Cannaux> canals = new ArrayList<Cannaux>();
+	        
+	            
+	            
 	//Ouvrir le fichier CSV 
 	            bufferReader = new BufferedReader(new FileReader(fileName));
 	//parcourir les lignes du fichier CSV
 	            while ((line = bufferReader.readLine()) != null) {
 	                lineID++;
+	              	//get next token and store it in the array
+                	List<Cannaux> Cans = new ArrayList<Cannaux>();
+
+            		// read line by line
+            		String[] record = null;
+
 	//Parcourir les champs séparés par delimiter
 	                strToken = new StringTokenizer(line, delimiter);
 	                while (strToken.hasMoreTokens()) {
+	              
+	            		
+	            			Cannaux can = new Cannaux();
+	            			can.setTranche(record[0]);
+	            			can.setQuart(record[1]);
+	            			can.setChainetv(record[2]);
+	            			
+	            			can.setNbre(record[3]);
+	            			Cans.add(can);
+	            		}
+
+	            		System.out.println(Cans);
+	            		System.out.println("bye bye ");
+	            		
+	            		
+	            	}	                	
 	                    fieldID++;
 	                    System.out.println("Ligne " + lineID
 	                            + " / champs " + fieldID
 	                            + " : " + strToken.nextToken());
 	                   
-	                   /*int name = fieldID;
-	                   String tranche = strToken.nextToken();
-	            		String quart = strToken.nextToken();
-	            		String chaine = strToken.nextToken();
-	            		String nbindividus = strToken.nextToken();
-	            		System.out.println("tranche:"+fieldID);
-	            		System.out.println("quart:"+quart);
-	            		System.out.println("Chaine:"+chaine);
-	            	System.out.println("nombre individus:"+nbindividus);*/
-	                }
+	                
 	                fieldID = 0;
-	            }
+	            
 	        } catch (IOException ex) {
-	            Logger.getLogger(Tconnect.class.getName()).log(Level.SEVERE, null, ex);
-	        
+	         Logger.getLogger(Tconnect.class.getName()).log(Level.SEVERE, null, ex);
+	        	//ex.printStackTrace();
 
-	    }
+	    
+	}
 	}
 	}
 
@@ -124,8 +152,8 @@ public class Tconnect {
 	//}
 	//	}
 		//catch (Exception exc)
-	//	{exc.printStackTrace();
-	//}
+	//	
+	//}{exc.printStackTrace();
 //	}
 
 //}
