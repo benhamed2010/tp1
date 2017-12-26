@@ -89,11 +89,12 @@ public class Tconnect {
 	            
 	//Ouvrir le fichier CSV 
 	            bufferReader = new BufferedReader(new FileReader(fileName));
+	            List<Cannaux> Cans = new ArrayList<Cannaux>();
 	//parcourir les lignes du fichier CSV
 	            while ((line = bufferReader.readLine()) != null) {
 	                lineID++;
 	              	//get next token and store it in the array
-                	List<Cannaux> Cans = new ArrayList<Cannaux>();
+                	
 
             		// read line by line
             		String[] record = null;
@@ -103,12 +104,18 @@ public class Tconnect {
 	                while (strToken.hasMoreTokens()) {
 	              
 	            		
-	            			Cannaux can = new Cannaux();
+	                	Cannaux can = new Cannaux();
 	            			can.setTranche(record[0]);
 	            			can.setQuart(record[1]);
 	            			can.setChainetv(record[2]);
-	            			
 	            			can.setNbre(record[3]);
+	            			try {
+	            			    int nbree = Integer.parseInt(can.setNbre);
+	            			System.out.println("Actual String:"+record[3]);
+	            			    System.out.println("Converted to Int:" + nbree);
+	            		} catch (NumberFormatException e) {
+	            			      //Will Throw exception!
+	            			      //do something! anything to handle the exception.
 	            			Cans.add(can);
 	            		}
 
