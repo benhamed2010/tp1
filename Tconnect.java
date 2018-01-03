@@ -19,8 +19,11 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//import com.mysql.jdbc.Statement; 
-import java.sql.Statement;
+import java.sql.PreparedStatement;
+import com.mysql.jdbc.Statement; 
+//import java.sql.Statement;
+
+//import com.mysql.jdbc.Statement;
 
 
 
@@ -34,8 +37,9 @@ public class Tconnect {
 		
 		
 			Scanner in = new Scanner (file);
+			in.next();// ignore la premiere ligne
 			
-
+//attention
 			while (in.hasNextLine()){
 				String line = in.nextLine(); 
 				
@@ -59,10 +63,11 @@ public class Tconnect {
 	        Class.forName("com.mysql.jdbc.Driver");
 	        System.out.println("Drivers reussi");
 	        Connection con=DriverManager.getConnection(url, username, password);
-	        Statement getData=con.createStatement();
+	        Statement getData=(Statement) con.createStatement();
 	        System.out.println("Connection reussi");
 	        ResultSet rs = getData.executeQuery("select * from t_audience");
 	        while(rs.next()){
+	        	System.out.println("bonjourrrrrr");
 	        	System.out.println(rs.getString(1));
 	        	System.out.println(rs.getString(2));
 	        	System.out.println(rs.getString(3));
@@ -70,7 +75,7 @@ public class Tconnect {
 	        }
 	        System.out.println("Merci de votre attention....");
 	        
-	        con.close();
+	        
 
 	    }catch(Exception e) {System.out.println(e);}
 	        
@@ -104,19 +109,37 @@ public class Tconnect {
 	                while (strToken.hasMoreTokens()) {
 	              
 	            		
-	                	Cannaux can = new Cannaux();
+	                /*	Cannaux can = new Cannaux();
 	            			can.setTranche(record[0]);
 	            			can.setQuart(record[1]);
 	            			can.setChainetv(record[2]);
 	            			can.setNbre(record[3]);
+	            			String ch1 = record[3].replaceAll(" ", ""); 
+
 	            			try {
-	            			    int nbree = Integer.parseInt(can.setNbre);
+	            			    int nbree = Integer.parseInt(ch1);
 	            			System.out.println("Actual String:"+record[3]);
 	            			    System.out.println("Converted to Int:" + nbree);
 	            		} catch (NumberFormatException e) {
 	            			      //Will Throw exception!
 	            			      //do something! anything to handle the exception.
-	            			Cans.add(can);
+	            			Cans.add(can);*/
+	            			 // the mysql insert statement
+	      	               String query = " insert into t_audience (tranche, quart, chaine, individus)"
+	      	                  + " values (?, ?, ?, ?)";
+	      	                // create the mysql insert preparedstatement
+	      	                PreparedStatement preparedStmt = con.prepareStatement(query);
+	      	                preparedStmt.setString (1, record[0]);
+	      	                preparedStmt.setString (2, record[1]);
+	      	                preparedStmt.setString   (3, record[2]);
+	      	                
+	      	                preparedStmt.setString    (4, record[3]);
+	      	            }
+	      	                // execute the preparedstatement
+	      	                preparedStmt.execute();
+	      	            
+	      	                con.close();
+	      	            
 	            		}
 
 	            		System.out.println(Cans);
@@ -131,15 +154,15 @@ public class Tconnect {
 	                   
 	                
 	                fieldID = 0;
-	            
-	        } catch (IOException ex) {
+	            }}
+	         catch (IOException ex) {
 	         Logger.getLogger(Tconnect.class.getName()).log(Level.SEVERE, null, ex);
 	        	//ex.printStackTrace();
 
 	    
+	
 	}
-	}
-	}
+	}}
 
 
 	
