@@ -33,6 +33,8 @@ public class Tconnect {
 
 	public static void main(String[] args) throws FileNotFoundException  {
 		//CSV
+		try
+		{
 		String fileName ="monfichier.csv";
 		File file = new File(fileName);
 		
@@ -54,7 +56,7 @@ public class Tconnect {
 	        String password = "";
 	        String url = "jdbc:mysql://localhost/db_audience";
 
-	       try {
+	       
 
 	        Class.forName("com.mysql.jdbc.Driver");
 	        System.out.println("Drivers reussi");
@@ -84,6 +86,7 @@ public class Tconnect {
 //Ouvrir le fichier CSV 
             bufferReader = new BufferedReader(new FileReader(fileName));
             List<Cannaux> Cans = new ArrayList<Cannaux>();
+            bufferReader.readLine();
 //parcourir les lignes du fichier CSV
             while ((line = bufferReader.readLine()) != null) {
                 lineID++;
@@ -91,11 +94,12 @@ public class Tconnect {
             	
 
         		// read line by line
-        		String[] record = null;
+        		String[] record = line.split(delimiter);
 
 //Parcourir les champs séparés par delimiter
-                strToken = new StringTokenizer(line, delimiter);
-                while (strToken.hasMoreTokens()) {
+               // strToken = new StringTokenizer(line, delimiter);
+        		
+                //while (strToken.hasMoreTokens()) {
               
                         			 // the mysql insert statement
       	               String query = " insert into t_audience (tranche, quart, chaine, individus)"
@@ -114,7 +118,7 @@ public class Tconnect {
       	                con.close();
       	            
             		}
-            }
+            
 	       }
 	
                 catch (Exception e)
