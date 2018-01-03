@@ -20,6 +20,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.PreparedStatement;
+
 import com.mysql.jdbc.Statement; 
 //import java.sql.Statement;
 
@@ -39,7 +40,7 @@ public class Tconnect {
 			Scanner in = new Scanner (file);
 			in.next();// ignore la premiere ligne
 			
-//attention
+
 			while (in.hasNextLine()){
 				String line = in.nextLine(); 
 				
@@ -49,16 +50,11 @@ public class Tconnect {
 			in.close();
 			
 
-		// TODO Auto-generated method stub
-// Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-// System.out.println("Drivers reussi");
-// Connection Cn = (Connection) DriverManager.getConnection("jdbc:odbc:MysqlDb","","");
-// System.out.println("Connection reussi");
 		 String username = "root";
 	        String password = "";
 	        String url = "jdbc:mysql://localhost/db_audience";
 
-	        try {
+	       try {
 
 	        Class.forName("com.mysql.jdbc.Driver");
 	        System.out.println("Drivers reussi");
@@ -73,118 +69,88 @@ public class Tconnect {
 	        	System.out.println(rs.getString(3));
 	        	System.out.println(rs.getString(4));
 	        }
-	        System.out.println("Merci de votre attention....");
 	        
-	        
+	        String delimiter = ";";
+            String line = null;
+            StringTokenizer strToken = null;
+            BufferedReader bufferReader;
+            int lineID = 0;
+            int fieldID = 0;
+           
+         //   ArrayList<Cannaux> canals = new ArrayList<Cannaux>();
+        
+            
+            
+//Ouvrir le fichier CSV 
+            bufferReader = new BufferedReader(new FileReader(fileName));
+            List<Cannaux> Cans = new ArrayList<Cannaux>();
+//parcourir les lignes du fichier CSV
+            while ((line = bufferReader.readLine()) != null) {
+                lineID++;
+              	//get next token and store it in the array
+            	
 
-	    }catch(Exception e) {System.out.println(e);}
-	        
-	        try {
-	            
-	            String delimiter = ";";
-	            String line = null;
-	            StringTokenizer strToken = null;
-	            BufferedReader bufferReader;
-	            int lineID = 0;
-	            int fieldID = 0;
-	           
-	         //   ArrayList<Cannaux> canals = new ArrayList<Cannaux>();
-	        
-	            
-	            
-	//Ouvrir le fichier CSV 
-	            bufferReader = new BufferedReader(new FileReader(fileName));
-	            List<Cannaux> Cans = new ArrayList<Cannaux>();
-	//parcourir les lignes du fichier CSV
-	            while ((line = bufferReader.readLine()) != null) {
-	                lineID++;
-	              	//get next token and store it in the array
-                	
+        		// read line by line
+        		String[] record = null;
 
-            		// read line by line
-            		String[] record = null;
-
-	//Parcourir les champs séparés par delimiter
-	                strToken = new StringTokenizer(line, delimiter);
-	                while (strToken.hasMoreTokens()) {
+//Parcourir les champs séparés par delimiter
+                strToken = new StringTokenizer(line, delimiter);
+                while (strToken.hasMoreTokens()) {
+              
+                        			 // the mysql insert statement
+      	               String query = " insert into t_audience (tranche, quart, chaine, individus)"
+      	                  + " values (?, ?, ?, ?)";
+      	                // create the mysql insert preparedstatement
+      	                PreparedStatement preparedStmt = con.prepareStatement(query);
+      	                preparedStmt.setString (1, record[0]);
+      	                preparedStmt.setString (2, record[1]);
+      	                preparedStmt.setString   (3, record[2]);
+      	                
+      	                preparedStmt.setString    (4, record[3]);
+      	            
+      	                // execute the preparedstatement
+      	                preparedStmt.execute();
+      	            
+      	                con.close();
+      	            
+            		}
+            }
+	       }
+	
+                catch (Exception e)
 	              
-	            		
-	                /*	Cannaux can = new Cannaux();
-	            			can.setTranche(record[0]);
-	            			can.setQuart(record[1]);
-	            			can.setChainetv(record[2]);
-	            			can.setNbre(record[3]);
-	            			String ch1 = record[3].replaceAll(" ", ""); 
+	              {
+	                System.err.println("Got an exception!");
+	                System.err.println(e.getMessage());
+	              }
 
-	            			try {
-	            			    int nbree = Integer.parseInt(ch1);
-	            			System.out.println("Actual String:"+record[3]);
-	            			    System.out.println("Converted to Int:" + nbree);
-	            		} catch (NumberFormatException e) {
-	            			      //Will Throw exception!
-	            			      //do something! anything to handle the exception.
-	            			Cans.add(can);*/
-	            			 // the mysql insert statement
-	      	               String query = " insert into t_audience (tranche, quart, chaine, individus)"
-	      	                  + " values (?, ?, ?, ?)";
-	      	                // create the mysql insert preparedstatement
-	      	                PreparedStatement preparedStmt = con.prepareStatement(query);
-	      	                preparedStmt.setString (1, record[0]);
-	      	                preparedStmt.setString (2, record[1]);
-	      	                preparedStmt.setString   (3, record[2]);
-	      	                
-	      	                preparedStmt.setString    (4, record[3]);
-	      	            }
-	      	                // execute the preparedstatement
-	      	                preparedStmt.execute();
-	      	            
-	      	                con.close();
-	      	            
-	            		}
+            }
+            }
 
-	            		System.out.println(Cans);
-	            		System.out.println("bye bye ");
-	            		
-	            		
-	            	}	                	
-	                    fieldID++;
-	                    System.out.println("Ligne " + lineID
-	                            + " / champs " + fieldID
-	                            + " : " + strToken.nextToken());
-	                   
-	                
-	                fieldID = 0;
-	            }}
-	         catch (IOException ex) {
-	         Logger.getLogger(Tconnect.class.getName()).log(Level.SEVERE, null, ex);
-	        	//ex.printStackTrace();
-
-	    
-	
-	}
-	}}
+            
+/*
+            		System.out.println(Cans);
+            		System.out.println("bye bye ");
+            		
+            		
+            	}	                	
+                    fieldID++;
+                    System.out.println("Ligne " + lineID
+                            + " / champs " + fieldID
+                            + " : " + strToken.nextToken());
+                   
+                
+                fieldID = 0;
+	        }*/
+                
+         
 
 
-	
-//		try{
-//1. Get a connection to database
-//Tconnect myConn= DriverManager.getConnection("jdbc:Mysql://localhost:3306/audience1","","");
 
-//2. Create a statement
-//	Statement myStmt= myConn.createStatement();	
-//3.Execute Query
-	//ResultSet myRs= myStmt.executeQuery("select * from audiencee");
-	
-//4. Process the result
-//	while (myRs.next()){
-	//	System.out.println(myRs.getString("tranche"));
-		
-	//}
-	//	}
-		//catch (Exception exc)
-	//	
-	//}{exc.printStackTrace();
-//	}
 
-//}
-
+	        
+	        
+	        
+	   
+	            
+	           
